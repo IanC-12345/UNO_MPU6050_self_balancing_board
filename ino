@@ -18,7 +18,7 @@ float error_y;
 float error_y_previous;
 float y_setpoint = 92.5;
 
-float kp=0.5; 
+float kp=1; 
 float ki=0; 
 float kd=0; 
 double PID_p, PID_i, PID_d, PID_total;
@@ -29,10 +29,10 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
 
-  servo4.attach(4);
-  servo8.attach(8);
-  servo4.write(98);
-  servo8.write(92.5);
+  servo4.attach(4); // x-axis servo
+  servo8.attach(8); // y-axis servo
+  servo4.write(98); // centre the platform
+  servo8.write(92.5); centre the platform
   delay(500);
   Serial.println("Motor Finish Setup");
   
@@ -48,7 +48,7 @@ void setup() {
 
 void loop() {
   mpu.update();
-  if((millis()-timer)>100){ // print data every 10ms
+  if((millis()-timer)>100){ // print data every 100ms
 	Serial.print("X : ");
 	Serial.print(mpu.getAngleX());
 	Serial.print("\tY : ");
@@ -68,8 +68,8 @@ void loop() {
     PID_d = kd*((error_y - error_y_previous)/period);
     PID_i = PID_i + (ki * error_y);  
     PID_total = PID_p + PID_i + PID_d;  
+    
     //PID_total = map(PID_total, -150, 150, 0, 150);
-  
     //if(PID_total < 20){PID_total = 20;}
     //if(PID_total > 160) {PID_total = 160; } 
 
@@ -85,19 +85,3 @@ void loop() {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
