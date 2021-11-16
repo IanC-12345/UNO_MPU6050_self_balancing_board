@@ -22,7 +22,7 @@ float error_y_previous;
 float y_setpoint = 92.5;
 
 float kp_x=1; 
-float ki_x=0 ; 
+float ki_x=0; 
 float kd_x=0; 
 
 float kp_y=1 ; 
@@ -71,8 +71,9 @@ void loop() {
     }
     
     else{
-      mpu.update();      
-      if((millis()-timer)>100){
+      mpu.update(); 
+      if((millis()-timer)>10){
+         
 
   error_x = x_setpoint - mpu.getAngleX();
   error_y = y_setpoint - mpu.getAngleY();
@@ -91,9 +92,7 @@ void loop() {
     
     PID_total_y = PID_p_y + PID_i_y + PID_d_y; 
 
-     servo8.write(PID_total_y);
-
-
+     
     PID_p_x = kp_x * error_x;
     float diff_x = error_x - error_x_previous;     
     PID_d_x = kd_x*((error_x - error_x_previous)/period);
@@ -107,8 +106,11 @@ void loop() {
     PID_total_x = PID_p_x + PID_i_x + PID_d_x;
     }
 
-  
+  servo8.write(PID_total_y);
   servo4.write(PID_total_x);
+  
+  Serial.println(-mpu.getAngleY());
+  Serial.println(mpu.getAngleX());
 
   error_y_previous - error_y;  
   error_x_previous - error_x; 
