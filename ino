@@ -1,5 +1,3 @@
-#include <MPU6050_light.h>
-
 #include "Wire.h"
 #include <MPU6050_light.h>
 #include <Servo.h>
@@ -8,7 +6,7 @@ Servo servo4;
 Servo servo8;
 
 
-int period = 10;
+int period = 50;
 
 unsigned long timer = 0;
 unsigned long time;
@@ -22,12 +20,12 @@ float error_y_previous;
 float y_setpoint = 92.5;
 
 float kp_x=1; 
-float ki_x=0; 
-float kd_x=0; 
+float ki_x=0.0001; 
+float kd_x=1; 
 
 float kp_y=1 ; 
-float ki_y=0; 
-float kd_y=0; 
+float ki_y=0.0001; 
+float kd_y=1; 
 
 
 double PID_p_x, PID_i_x, PID_d_x, PID_total_x;
@@ -60,6 +58,7 @@ void setup() {
   Serial.println("Done!\n");
 }
 
+
 void loop() {
 
    
@@ -71,8 +70,11 @@ void loop() {
     }
     
     else{
-      mpu.update(); 
-      if((millis()-timer)>10){
+             if (millis() > time+period){
+
+time = millis();
+mpu.update();
+
          
 
   error_x = x_setpoint - mpu.getAngleX();
@@ -112,10 +114,10 @@ void loop() {
   Serial.println(-mpu.getAngleY());
   Serial.println(mpu.getAngleX());
 
-  error_y_previous - error_y;  
-  error_x_previous - error_x; 
+  error_y_previous = error_y;  
+  error_x_previous = error_x; 
   
-  timer = millis();  
+ 
 
       }
     }
