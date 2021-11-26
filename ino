@@ -2,7 +2,7 @@
 #include <MPU6050_light.h>
 #include <Servo.h>
 
-Servo servo4; // control the y-axis
+Servo servo4; // control the x-axis
 Servo servo8; // control the y-axis
 
 int period = 50;
