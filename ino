@@ -2,8 +2,8 @@
 #include <MPU6050_light.h>
 #include <Servo.h>
 
-Servo servo4;
-Servo servo8;
+Servo servo4; // control the y-axis
+Servo servo8; // control the y-axis
 
 int period = 50;
 
@@ -36,8 +36,8 @@ void setup() {
 
   servo4.attach(4);
   servo8.attach(8);
-  servo4.write(98);
-  servo8.write(92.5);
+  servo4.write(x_setpoint);
+  servo8.write(y_setpoint);
   delay(500);
   Serial.println("Motor Finish Setup");
   
@@ -46,10 +46,12 @@ void setup() {
   Serial.println(status);
   while(status!=0){ } // stop everything if could not connect to MPU6050
   Serial.println(F("Calculating offsets, do not move MPU6050"));
-   delay(1000);
+  delay(1000);
+  
   mpu.calcOffsets();
   mpu.getFilterGyroCoef();
   mpu.update(); 
+  
   Serial.println(-mpu.getAngleY());
   Serial.println(mpu.getAngleX());
   Serial.println("Done!\n");
@@ -113,9 +115,3 @@ void loop() {
       }
     }
 }
-    
-
-   
-
-
- 
