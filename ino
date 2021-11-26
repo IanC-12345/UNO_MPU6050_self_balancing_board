@@ -5,15 +5,14 @@
 Servo servo4;
 Servo servo8;
 
-
 int period = 50;
 
 unsigned long timer = 0;
 unsigned long time;
 
-double error_x;
-double error_x_previous;
-double x_setpoint = 98;
+float error_x;
+float error_x_previous;
+float x_setpoint = 98;
 
 float error_y;
 float error_y_previous;
@@ -21,18 +20,16 @@ float y_setpoint = 92.5;
 
 float kp_x=1; 
 float ki_x=0.0001; 
-float kd_x=1; 
+float kd_x=0.1; 
 
 float kp_y=1 ; 
 float ki_y=0.0001; 
-float kd_y=1; 
-
+float kd_y=0.11; 
 
 double PID_p_x, PID_i_x, PID_d_x, PID_total_x;
 double PID_p_y, PID_i_y, PID_d_y, PID_total_y;
 
 MPU6050 mpu(Wire);
-
 
 void setup() {
   Serial.begin(115200);
@@ -55,13 +52,13 @@ void setup() {
   mpu.getFilterGyroCoef();
   mpu.update(); 
   Serial.println(-mpu.getAngleY());
+  Serial.println(mpu.getAngleX());
   Serial.println("Done!\n");
 }
 
 
 void loop() {
 
-   
     if(time<5000){
     time = millis();
     mpu.update();
@@ -70,16 +67,13 @@ void loop() {
     }
     
     else{
-             if (millis() > time+period){
-
-time = millis();
-mpu.update();
-
-         
-
-  error_x = x_setpoint - mpu.getAngleX();
-  error_y = y_setpoint - mpu.getAngleY();
-
+    if (millis() > time+period){
+    time = millis();
+    mpu.update();
+    
+    error_y = y_setpoint - mpu.getAngleY();
+    error_x = x_setpoint - mpu.getAngleX();
+    
     PID_p_y = kp_y * error_y;
     float diff_y = error_y - error_y_previous;     
     PID_d_y = kd_y*((error_y - error_y_previous)/period);    
@@ -98,27 +92,25 @@ mpu.update();
     PID_p_x = kp_x * error_x;
     float diff_x = error_x - error_x_previous;     
     PID_d_x = kd_x*((error_x - error_x_previous)/period);
-   if(95 < error_x && error_x < 101)
+    if(95 < error_x && error_x < 101)
     {
       PID_i_x = PID_i_x + (ki_x * error_x);
     }
     else
     {
-      PID_i_x = 0;  
-    PID_total_x = PID_p_x + PID_i_x + PID_d_x;
+      PID_i_x = 0;
     }
+    
+    PID_total_x = PID_p_x + PID_i_x + PID_d_x;
 
-  servo8.write(PID_total_y);
-  servo4.write(PID_total_x);
+    servo8.write(PID_total_y);
+    servo4.write(PID_total_x);
   
-  Serial.println(-mpu.getAngleY());
-  Serial.println(mpu.getAngleX());
+    Serial.println(-mpu.getAngleY());
+    Serial.println(mpu.getAngleX());
 
-  error_y_previous = error_y;  
-  error_x_previous = error_x; 
-  
- 
-
+    error_y_previous = error_y;  
+    error_x_previous = error_x; 
       }
     }
 }
