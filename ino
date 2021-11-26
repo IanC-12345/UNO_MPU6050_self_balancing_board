@@ -7,7 +7,6 @@ Servo servo8;
 
 int period = 50;
 
-unsigned long timer = 0;
 unsigned long time;
 
 float error_x;
