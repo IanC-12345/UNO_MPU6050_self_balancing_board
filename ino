@@ -23,7 +23,7 @@ float kd_x=0.1;
 
 float kp_y=1 ; 
 float ki_y=0.0001; 
-float kd_y=0.11; 
+float kd_y=0.1; 
 
 double PID_p_x, PID_i_x, PID_d_x, PID_total_x;
 double PID_p_y, PID_i_y, PID_d_y, PID_total_y;
